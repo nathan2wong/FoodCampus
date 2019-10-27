@@ -40,6 +40,28 @@
     padding: 0;
   }
 
+  table {
+  width:100%;
+  }
+  table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 15px;
+    text-align: left;
+  }
+  table#t01 tr:nth-child(even) {
+    background-color: #eee;
+  }
+  table#t01 tr:nth-child(odd) {
+   background-color: #fff;
+  }
+  table#t01 th {
+    background-color: black;
+    color: white;
+  }
+
   #map {
     position: absolute;
     top: 0;
@@ -439,16 +461,33 @@
             </div>
             <div class="column2">
                 <h2>Welcome Kelly!</h2>
-                <p># of people you are ordering for: 3</p>
-                <ul>
-                    <li>Snack 1</li>
-                    <li>Snack 2</li>
-                    <li>Snack 3</li>
-                    <li>Snack 4</li>
-                    <li>Snack 5</li>
-                    <li>Snack 6</li>
-                </ul>
-                <button type="button">Submit!</button>
+                <p>Tim and Nathan will be meet you at your final destination, the Recreational Sports Facility, to pick up their order. They placed 4 orders and are expecting you at roughly 10PM. You will be paid upon the successful delivery of your order.</p>
+                <p>Number of Orders: 4</p>
+                <table>
+                  <tr>
+                    <th>Order</th>
+                    <th>Quantity</th> 
+                    <th>Price</th>
+                  </tr>
+                  <tr>
+                    <td><strong>Nathan: </strong>Chipotle - Chicken Bowl</td>
+                    <td>2</td>
+                    <td>$15.80 USD</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Tim: </strong>Chipotle - Steak Burrito</td>
+                    <td>1</td>
+                    <td>$8.90 USD</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Tim: </strong>Chipotle - Veggie Bowl</td>
+                    <td>1</td>
+                    <td>$7.90 USD</td>
+                  </tr>
+                </table>
+                <br>
+                <button type="button">Done</button>
+              </div>
             </div>
         </div>
     </div>
