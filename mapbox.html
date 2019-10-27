@@ -5,7 +5,7 @@
     <title>Points on a map</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
+    <link href= "{{ url_for('static', filename='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css)}}'" rel='stylesheet' />
     <style>
 		body {
 			margin: 0;
@@ -19,7 +19,7 @@
 			width: 100%;
 		}
 		.marker-restaurant {
-			background-image: url('./restaurant-15.svg');
+			background-image: url(l('''{{ url_for('static', filename='./restaurant-15.svg') }}'''));
 			background-size: cover;
 			width: 25px;
 			height: 25px;
@@ -68,7 +68,7 @@
 	    "latitude": 37.8671,
 	    "longitude": -122.25869
 	  },
-	  { 
+	  {
 	    "name": "Mezzo \u2022 Veggie Delight $10.75 \u2022 Veggie Delight $11.20 \u2022 Marinated Tofu Sandwich $10.50 \u2022 Roast Beef Sandwich $10.50",
 	    "latitude": 37.866131,
 	    "longitude": -122.258698
