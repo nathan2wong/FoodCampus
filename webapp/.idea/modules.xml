@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FoodCamppus.iml" filepath="$PROJECT_DIR$/FoodCamppus.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/webapp.iml" filepath="$PROJECT_DIR$/.idea/webapp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/foodcampus.iml" filepath="$PROJECT_DIR$/foodcampus.iml" />
     </modules>
   </component>
 </project>

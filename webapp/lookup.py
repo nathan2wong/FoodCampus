@@ -16,7 +16,7 @@ app.secret_key = os.urandom(2**16)
 import firebase_admin
 from firebase_admin import credentials, storage, auth, firestore
 
-cred=credentials.Certificate('/root/FoodCampus-5de64d4d1920.json')
+cred=credentials.Certificate('/Users/nathanwong/Desktop/FoodCampus-5de64d4d1920.json')
 firebase_admin.initialize_app(cred, {
     'projectID': 'foodcampus',
     'storageBucket': 'foodcampus.appspot.com'
@@ -177,9 +177,9 @@ side_nav = '''<ul class="sidebar navbar-nav">
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="/upload">
+      <a class="nav-link" href="/user">
         <i class="fas fa-fw fa-chart-area"></i>
-        <span>Pipetting</span></a>
+        <span>User Application</span></a>
     </li>
   </ul>'''
 
