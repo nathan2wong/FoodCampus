@@ -5,8 +5,12 @@
     <title>Points on a map</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
+<<<<<<< HEAD
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+=======
+    <link href= "{{ url_for('static', filename='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css)}}'" rel='stylesheet' />
+>>>>>>> 33d5143a79ae0634d8d321059d5fd5007a939f31
     <style>
 		body {
 			margin: 0;
@@ -20,7 +24,7 @@
 			width: 100%;
 		}
 		.marker-restaurant {
-			background-image: url('./restaurant-15.svg');
+			background-image: url(l('''{{ url_for('static', filename='./restaurant-15.svg') }}'''));
 			background-size: cover;
 			width: 25px;
 			height: 25px;
@@ -76,8 +80,8 @@
 	  },
 	  {
 	    "name": "Gypsy's Trattoria Italiana \u2022 Crazy Alfredo $10.99 \u2022 Melanzana Con Pollo $10.99 \u2022 Godfather's favorite $10.99 \u2022 Funghi $8.49 \u2022 Lasagna $10.99",
-	    "latitude": 37.87256,
-	    "longitude": -122.26671
+	    "latitude": 37.868240,
+	    "longitude": -122.258057
 	  },
 	  {
 	    "name": "Fire Wings \u2022 Garlic Noodles (Reg) $4.99 \u2022 Saigon Street Wings (10) $10.99 \u2022 Salt and Pepper Wings (10) $10.99 \u2022 Thai Chili Wings (10) $8.49 \u2022 Boneless Wings (10) $10.99",
@@ -94,7 +98,7 @@
 	    "latitude": 37.8671,
 	    "longitude": -122.25869
 	  },
-	  { 
+	  {
 	    "name": "Mezzo \u2022 Veggie Delight $10.75 \u2022 Veggie Delight $11.20 \u2022 Marinated Tofu Sandwich $10.50 \u2022 Roast Beef Sandwich $10.50",
 	    "latitude": 37.866131,
 	    "longitude": -122.258698
