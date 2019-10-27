@@ -11,10 +11,10 @@
   <title>Simple Sidebar - Start Bootstrap Template</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
-  <link href="css/simple-sidebar.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/simple-sidebar.css" rel="stylesheet">
 
   <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
   <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
@@ -107,9 +107,9 @@
     <div class="bg-light border-right" id="sidebar-wrapper">
       <div class="sidebar-heading">FoodCampus Interface</div>
       <div class="list-group list-group-flush">
-        <a href="#" class="list-group-item list-group-item-action bg-light">Cart</a>
-        <a href="./buyer.html" class="list-group-item list-group-item-action bg-light">Buyer</a>
-        <a href="./index.html" class="list-group-item list-group-item-action bg-light">Logout/Home</a>
+        <a href="{{ url_for('static', filename='#')}}" class="list-group-item list-group-item-action bg-light">Cart</a>
+        <a href="{{ url_for('static', filename='./buyer.html')}}" class="list-group-item list-group-item-action bg-light">Buyer</a>
+        <a href="{{ url_for('static', filename='./index.html')}}" class="list-group-item list-group-item-action bg-light">Logout/Home</a>
       </div>
     </div>
     <!-- /#sidebar-wrapper -->
@@ -127,20 +127,20 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
             <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="{{ url_for('static', filename='#')}}">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
+              <a class="nav-link" href="{{ url_for('static', filename='#')}}">Link</a>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="{{ url_for('static', filename='#')}}" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Dropdown
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="{{ url_for('static', filename='#')}}">Action</a>
+                <a class="dropdown-item" href="{{ url_for('static', filename='#')}}">Another action</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
+                <a class="dropdown-item" href="{{ url_for('static', filename='#')}}">Something else here</a>
               </div>
             </li>
           </ul>
@@ -444,8 +444,8 @@
   <!-- /#wrapper -->
 
   <!-- Bootstrap core JavaScript -->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 
   <!-- Menu Toggle Script -->
   <script>
