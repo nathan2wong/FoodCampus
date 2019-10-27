@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <title>Points on a map</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
+    <style>
+		body {
+			margin: 0;
+			padding: 0;
+		}
+
+		#map {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 100%;
+		}
+		.marker-restaurant {
+			background-image: url('./restaurant-15.svg');
+			background-size: cover;
+			width: 25px;
+			height: 25px;
+			/*border-radius: 50%;*/
+			cursor: pointer;
+		}
+    </style>
+  </head>
+  <body>
+    <div id='map'></div>
+    <script>
+
+    const restaurantList = [
+	  {
+	    "name": "Gypsy's Trattoria Italiana",
+	    "latitude": 37.86824,
+	    "longitude": -122.25806
+	  },
+	  {
+	    "name": "Taco Sinaloa",
+	    "latitude": 37.86717,
+	    "longitude": -122.25892
+	  },
+	  {
+	    "name": "Imm Thai Street Food",
+	    "latitude": 37.87196,
+	    "longitude": -122.27059
+	  },
+	  {
+	    "name": "Brazil Caf�",
+	    "latitude": 37.87256,
+	    "longitude": -122.26671
+	  },
+	  {
+	    "name": "Fire Wings",
+	    "latitude": 37.87165,
+	    "longitude": -122.26807
+	  },
+	  {
+	    "name": "Super Duper Burger",
+	    "latitude": 37.867668,
+	    "longitude": -122.258827
+	  },
+	  {
+	    "name": "KoJa Kitchen",
+	    "latitude": 37.8671,
+	    "longitude": -122.25869
+	  },
+	  {
+	    "name": "Mezzo",
+	    "latitude": 37.866131,
+	    "longitude": -122.258698
+	  },
+	  {
+	    "name": "Top Dog",
+	    "latitude": 37.867771,
+	    "longitude": -122.257408
+	  },
+	  {
+	    "name": "Chipotle",
+	    "latitude": 37.86838,
+	    "longitude": -122.25896
+	  },
+	  {
+	    "name": "Thai Basil",
+	    "latitude": 37.86824,
+	    "longitude": -122.25806
+	  }
+	];
+
+
+    mapboxgl.accessToken = 'pk.eyJ1Ijoia2VsbHlodWFuZyIsImEiOiJjazI3dnZ6dTExODR2M2NwZWgxOW5maXlrIn0.RtWUeLy_ygw4eXGnty16Tg'; // replace this with your access token
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/kellyhuang/ck27xup9f1skk1cl3upjhckde', // replace this with your style URL
+      center: [-122.272781, 37.8715],
+      zoom: 15
+    });
+
+    const setupPopup = (restaurantName) => {
+    	return new mapboxgl.Popup({ offset: 25 })
+		.setText(restaurantName);
+    }
+
+    // code from the next step will go here
+    restaurantList.forEach((location) => {
+	  	var el = document.createElement('div');
+  		el.className = 'marker-restaurant';
+    	new mapboxgl.Marker(el)
+		.setLngLat([location.longitude, location.latitude])
+		.setPopup(setupPopup(location.name))
+		.addTo(map);
+    })
+    
+    </script>
+  </body>
+</html>
