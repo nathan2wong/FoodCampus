@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1,user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Deliver</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template -->
+    <link href="{{ url_for('static', filename='css/simple-sidebar.css')}}" rel="stylesheet">
+
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase.js"></script>
+
+    <link href="{{ url_for('static',filename='css/sb-admin.css') }}" rel="stylesheet">
+
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+
+
+    <style>
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  #map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+  }
+  .marker-restaurant {
+    background-image: url('./restaurant-15.svg');
+    background-size: cover;
+    width: 25px;
+    height: 25px;
+    /*border-radius: 50%;*/
+    cursor: pointer;
+  }
+  .marker-meetup {
+    background-image: url('./marker-stroked-15.svg');
+    background-size: cover;
+    width: 20px;
+    height: 20px;
+    /*border-radius: 50%;*/
+    cursor: pointer;
+  }
+  #meetup-marker-popup {
+    height: 100px;
+    width: 100px;
+    display: none;
+    background-color: white;
+    z-index: 100000000000000000000000000000000000000;
+
+        position: relative;
+  background: #fff;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  padding: 10px 10px 15px;
+  pointer-events: auto;
+  }
+    * {
+    box-sizing: border-box;
+  }
+
+  /* Create two equal columns that floats next to each other */
+  .column {
+    float: left;
+    width: 50%;
+    padding: 15px;
+    position:relative;
+    height:100%;
+  }
+
+  .column2 {
+    float: left;
+    width: 50%;
+    padding: 25px;
+    position:relative;
+    height:100%;
+  }
+
+  /* Clear floats after the columns */
+  .row {
+    position:relative;
+    height:100%;
+  }
+
+  /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+  @media screen and (max-width: 600px) {
+    .column {
+      width: 100%;
+    }
+  }
+  </style>
+
+</head>
+
+<body>
+
+<div class="d-flex" id="wrapper">
+
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+        <div class="sidebar-heading">FoodCampus Interface</div>
+        <div class="list-group list-group-flush">
+            <a href="/payment" class="list-group-item list-group-item-action bg-light">Payment</a>
+            <a href="/user" class="list-group-item list-group-item-action bg-light">Buyer</a>
+            <a href="/login" class="list-group-item list-group-item-action bg-light">Logout/Home</a>
+        </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <button class="btn btn-primary" id="menu-toggle">Hide Menu</button>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ url_for('static', filename='#')}}">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('static', filename='#')}}">Link</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('static', filename='#')}}" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Dropdown
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{{ url_for('static', filename='#')}}">Action</a>
+                            <a class="dropdown-item" href="{{ url_for('static', filename='#')}}">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ url_for('static', filename='#')}}">Something else here</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="row">
+            <div class="column">
+                <div id="meetup-marker-popup"></div>
+                <div id='map'></div>
+
+                <script>
+
+            const restaurantList = [
+            {
+              "name": "<strong>Brazil Cafe</strong> \u2022 Tri tip Sandwich $8.25 \u2022 Tri tip Plate $9.99 \u2022 Pedro's Favorite Tri tip Sandwich $9.99 \u2022 Pedro's Favorite Tri tip Sandwich $8.99 ",
+              "latitude": 37.86824,
+              "longitude": -122.25806
+            },
+            {
+              "name": "Taco Sinaloa \u2022 Super Burrito $14 \u2022 Burrito Bowl $9 \u2022 Tostada $6 \u2022 Torta $8 \u2022 Quesadilla de Carne $8.50",
+              "latitude": 37.86717,
+              "longitude": -122.25892
+            },
+            {
+              "name": "Imm Thai Street Food \u2022 Pad Thai $10 \u2022 Pad See Ew $10 \u2022 Pad Kee Mao $10 \u2022 Duck Noodle Soup $12 \u2022 Green Curry $11",
+              "latitude": 37.87196,
+              "longitude": -122.27059
+            },
+            {
+              "name": "Gypsy's Trattoria Italiana \u2022 Crazy Alfredo $10.99 \u2022 Melanzana Con Pollo $10.99 \u2022 Godfather's favorite $10.99 \u2022 Funghi $8.49 \u2022 Lasagna $10.99",
+              "latitude": 37.87256,
+              "longitude": -122.26671
+            },
+            {
+              "name": "Fire Wings \u2022 Garlic Noodles (Reg) $4.99 \u2022 Saigon Street Wings (10) $10.99 \u2022 Salt and Pepper Wings (10) $10.99 \u2022 Thai Chili Wings (10) $8.49 \u2022 Boneless Wings (10) $10.99",
+              "latitude": 37.87165,
+              "longitude": -122.26807
+            },
+            {
+              "name": "Super Duper Burger \u2022 Mini Burger $5.75 \u2022 Super Burger $8.25 \u2022 Coffee $2.50 \u2022 Chicken Sandwich $8 ",
+              "latitude": 37.867668,
+              "longitude": -122.258827
+            },
+            {
+              "name": "KoJa Kitchen \u2022 Short Rib Bowl $13.19 \u2022 Beef Koja $10.59 \u2022 Chicken Koja $9.39 \u2022 Braised Pork Koja $10.89",
+              "latitude": 37.8671,
+              "longitude": -122.25869
+            },
+            {
+              "name": "Mezzo \u2022 Veggie Delight $10.75 \u2022 Veggie Delight $11.20 \u2022 Marinated Tofu Sandwich $10.50 \u2022 Roast Beef Sandwich $10.50",
+              "latitude": 37.866131,
+              "longitude": -122.258698
+            },
+            {
+              "name": "Top Dog \u2022 Top Dog Frankfurter $3.75 \u2022 Top Dog Frankfurter $3.75 \u2022 Bockwurst (German) $3.75 \u2022 Bockwurst (German) $3.75 \u2022 Kielbasa (Polish) $3.75",
+              "latitude": 37.867771,
+              "longitude": -122.257408
+            },
+            {
+              "name": "Chipotle \u2022 Chicken Bowl $7.90 \u2022 Chicken Burrito $7.90 \u2022 Steak Bowl $8.90 \u2022 Veggie Bowl $7.90",
+              "latitude": 37.86838,
+              "longitude": -122.25896
+            },
+            {
+              "name": "Thai Basil \u2022 Green Curry Chicken $7.99 \u2022 Red Curry Chicken $7.99 \u2022 Pad Thai $8.22 \u2022 Pad See-ew Chicken $7.77 \u2022 Tom-Yum (Chicken or Vegetable) $6.40",
+              "latitude": 37.86824,
+              "longitude": -122.25806
+            }
+          ];
+
+            const meetupList = [
+            {
+              "location": "Li Ka Shing",
+              "latitude": 37.87295843,
+              "longitude": -122.2654381
+            },
+            {
+              "location": "Valley Life Sciences Building",
+              "latitude": 37.87142575,
+              "longitude": -122.2632638
+            },
+            {
+              "location": "Recreational Sports Facility",
+              "latitude": 37.86867438,
+              "longitude": -122.2627607
+            },
+            {
+              "location": "Eshleman Hall",
+              "latitude": 37.86875285,
+              "longitude": -122.2603671
+            },
+            {
+              "location": "Haas School of Business",
+              "latitude": 37.87156086,
+              "longitude": -122.2536357
+            },
+            {
+              "location": "Evans Hall",
+              "latitude": 37.87362363,
+              "longitude": -122.2578512
+            },
+            {
+              "location": "Soda Hall",
+              "latitude": 37.87561268,
+              "longitude": -122.258722
+            },
+            {
+              "location": "Wurster Hall",
+              "latitude": 37.87053656,
+              "longitude": -122.2549009
+            }
+          ];
+
+            mapboxgl.accessToken = 'pk.eyJ1Ijoia2VsbHlodWFuZyIsImEiOiJjazI3dnZ6dTExODR2M2NwZWgxOW5maXlrIn0.RtWUeLy_ygw4eXGnty16Tg'; // replace this with your access token
+            const map = new mapboxgl.Map({
+              container: 'map',
+              style: 'mapbox://styles/kellyhuang/ck27xup9f1skk1cl3upjhckde', // replace this with your style URL
+              center: [-122.260881, 37.8709],
+              zoom: 15
+            });
+
+        /* working placement of icons */
+            const setupCustomPopup = (content) => {
+              return new mapboxgl.Popup({ offset: 25 })
+            .setText(content);
+            }
+
+            // code from the next step will go here
+            restaurantList.forEach((location) => {
+              let el = document.createElement('div');
+              el.className = 'marker-restaurant';
+              new mapboxgl.Marker(el)
+            .setLngLat([location.longitude, location.latitude])
+            .setPopup(setupCustomPopup(location.name))
+            .addTo(map);
+            });
+
+
+          //   meetupList.forEach((meetup_loc) => {
+          //    let el = document.createElement('div');
+          //    el.className = 'marker-meetup';
+          //    el.setAttribute('data-location-name', meetup_loc.location);
+
+          //    new mapboxgl.Marker(el)
+          //    .setLngLat([meetup_loc.longitude, meetup_loc.latitude])
+          //    .setPopup(setupCustomPopup(meetup_loc.location))
+          //    .addTo(map);
+          //   });
+        /* working placement of icons */
+
+
+            map.on('load', function() {
+              map.addLayer({
+                "id": "places",
+              "type": "symbol",
+              "source": {
+                "type": "geojson",
+                "data": {
+                  "type": "FeatureCollection",
+                  "features": [{
+                    "type": "Feature",
+                    "properties": {
+                      "description": "<strong>Li Ka Shing</strong><p>Meet me here!</p>",
+                      "icon": "marker"
+                    },
+                    "geometry": {
+                      "type": "Point",
+                      "coordinates": [-122.2654381, 37.87295843]
+                    }
+                  }, {
+                    "type": "Feature",
+                    "properties": {
+                      "description": "<strong>Valley Life Sciences Building</strong><p>Meet me here!</p>",
+                      "icon": "marker"
+                    },
+                    "geometry": {
+                      "type": "Point",
+                      "coordinates": [-122.2632638, 37.87142575]
+                    }
+                  }, {
+                    "type": "Feature",
+                    "properties": {
+                      "description": "<strong>Recreational Sports Facility</strong><p>Meet me here!</p>",
+                      "icon": "marker"
+                    },
+                    "geometry": {
+                      "type": "Point",
+                      "coordinates": [-122.2627607, 37.86867438]
+                    }
+                  }, {
+                    "type": "Feature",
+                    "properties": {
+                      "description": "<strong>Eshleman Hall</strong><p>Meet me here!</p>",
+                      "icon": "marker"
+                    },
+                    "geometry": {
+                      "type": "Point",
+                      "coordinates": [-122.2603671, 37.86875285]
+                    }
+                  }, {
+                    "type": "Feature",
+                    "properties": {
+                      "description": "<strong>Haas School of Business</strong><p>Meet me here!</p>",
+                      "icon": "marker"
+                    },
+                    "geometry": {
+                      "type": "Point",
+                      "coordinates": [-122.2536357, 37.87156086]
+                    }
+                  }, {
+                    "type": "Feature",
+                    "properties": {
+                      "description": "<strong>Evan Hall</strong><p>Meet me here!</p>",
+                      "icon": "marker"
+                    },
+                    "geometry": {
+                      "type": "Point",
+                      "coordinates": [-122.2578512, 37.87362363]
+                    }
+                  }, {
+                    "type": "Feature",
+                    "properties": {
+                      "description": "<strong>Soda Hall</strong><p>Meet me here!</p>",
+                      "icon": "marker"
+                    },
+                    "geometry": {
+                      "type": "Point",
+                      "coordinates": [-122.258722, 37.87561268]
+                    }
+                  }, {
+                    "type": "Feature",
+                    "properties": {
+                      "description": "<strong>Wurster Hall</strong><p>Meet me here!</p>",
+                      "icon": "marker"
+                    },
+                    "geometry": {
+                      "type": "Point",
+                      "coordinates": [-122.2549009, 37.87053656]
+                    }
+                  }, ]
+                }
+              },
+              "layout": {
+                "icon-image": "{icon}-15",
+                "icon-allow-overlap": true
+              }
+            });
+            });
+
+            let popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
+          });
+
+          map.on('mouseenter', 'places', function(e) {
+            // Change the cursor style as a UI indicator.
+            map.getCanvas().style.cursor = 'pointer';
+
+            var coordinates = e.features[0].geometry.coordinates.slice();
+            var description = e.features[0].properties.description;
+
+            // Ensure that if the map is zoomed out such that multiple
+            // copies of the feature are visible, the popup appears
+            // over the copy being pointed to.
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            // Populate the popup and set its coordinates
+            // based on the feature found.
+            popup.setLngLat(coordinates)
+              .setHTML(description)
+              .addTo(map);
+          });
+
+          map.on('mouseleave', 'places', function() {
+            map.getCanvas().style.cursor = '';
+            popup.remove();
+          });
+
+            </script>
+            </div>
+            <div class="column2">
+                <h2>Welcome Kelly!</h2>
+                <p># of people you are ordering for: 3</p>
+                <ul>
+                    <li>Snack 1</li>
+                    <li>Snack 2</li>
+                    <li>Snack 3</li>
+                    <li>Snack 4</li>
+                    <li>Snack 5</li>
+                    <li>Snack 6</li>
+                </ul>
+                <button type="button">Submit!</button>
+            </div>
+        </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!-- Custom scripts for all pages-->
+<script src="{{ url_for('static',filename='js/sb-admin.min.js') }}"></script>
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="{{ url_for('static', filename='js/firebase_js.js') }}"></script>
+
+<!-- Menu Toggle Script -->
+<script>
+    $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
+  </script>
+<script>
+  $(document).ready(function() {
+    $('#example').DataTable( {
+    "pagingType": "simple"
+    });
+} );
+
+    $('button').click( function() {
+        var data = table.$('input, select').serialize();
+} );
+</script>
+<style>
+.previous{
+display:none;
+}
+</style>
+
+</body>
+
+</html>

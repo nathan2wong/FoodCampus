@@ -7,7 +7,7 @@ import google
 #from google.cloud import firestore
 
 ALLOWED_EXTENSIONS = set(['xlsx'])
-TAX = 1.0725
+TAX = 1.095
 COMISSION = 1
 
 app = Flask(__name__)
@@ -48,34 +48,27 @@ def homepage():
         blob.upload_from_filename(outfile)
     except:
         print("ok")
+    def displayAllData():
+        user_refs = db.collection("available options")
+        docs = user_refs.stream()
+        options = [doc.to_dict() for doc in docs]
+        ret_dict = {}
 
-    def computeCosts(purchase_orders):
-        raw_cost = 0.0
-        for key in purchase_orders:
-            user_refs = db.collection("restaurants/{0}/Items".format(key))
-            docs = user_refs.stream()
-            options = [doc.to_dict() for doc in docs]
-
-            for order in purchase_orders[key]:
-                for option in options:
-                    product = option['item']
-                    price = option['cash_price']
-                    if product == order:
-                        raw_cost += float(price)
-        post_tax = raw_cost * TAX
-        with_commission = max(post_tax + 1, post_tax + 0.08 *raw_cost)
-        return round(post_tax, 2), round(with_commission, 2)
+        for option in options:
+            product = option['item']
+            price = option['cash_price']
+            place = option["\ufeffname"]
+            popularity = option["popularity"]
+            if place in ret_dict:
+                ret_dict[place].append({product: [price, popularity]})
+            else:
+                ret_dict[place] = [{product: [price, popularity]}]
+        return ret_dict
+    display_dict = displayAllData()
 
 
-    raw, actual = computeCosts({"Chipotle": ["Chicken Bowl", "Chicken Burrito"], "Top Dog": ["Lemon Chicken", "Potato Salad", "Lemon Chicken", "Potato Salad", "Lemon Chicken", "Potato Salad"]})
-    print(raw, actual, round(actual-raw, 2))
+    return render_template("buyer.html", options=display_dict)
 
-    users_ref = db.collection('restaurants/Chipotle/Items')
-    docs = users_ref.stream()
-
-    options = [doc.to_dict() for doc in docs]
-
-    return render_template("analysis.html", top_nav = top_nav, side_nav=side_nav, default_packages=default_packages, options=options)
 
 @app.route('/login/notes')
 def session_login():
@@ -84,7 +77,6 @@ def session_login():
     try:
         # Create the session cookie. This will also verify the ID token in the process.
         # The session cookie will have the same claims as the ID token.
-        print(id_token)
         session_cookie = auth.create_session_cookie(id_token, expires_in=expires_in)
         response = jsonify({'status': 'success'})
         # Set cookie policy for session cookie.
@@ -111,7 +103,60 @@ def checkLoggedIn():
     except:
         # Session cookie is invalid, expired or revoked. Force user to login.
         return False
+#For testing
+@app.route("/<path:path>")
+def images(path):
+    resp = make_response(open(path).read())
+    resp.content_type = "image/png"
+    return resp
 
+@app.route("/submit", methods=['POST'])
+def submit():
+    if request.method == 'POST':
+        user_refs = db.collection("available options")
+        docs = user_refs.stream()
+        options = [doc.to_dict() for doc in docs]
+        ret_dict = {}
+
+        for option in options:
+            product = option['item']
+            price = option['cash_price']
+            place = option["\ufeffname"]
+            popularity = option["popularity"]
+            if place in ret_dict:
+                ret_dict[product].append([place, price, popularity]) #NEED TO FIX THIS LOL
+            else:
+                ret_dict[product] = [place, price, popularity]
+
+        raw_cost = 0.0
+        reqs = []
+        item_dict = {}
+        for item in request.form:
+            if len(request.form[item]) > 0 and item != "example_length":
+                reqs += [item] * int(request.form[item])
+        for item in reqs:
+            if item in ret_dict:
+                raw_cost += float(ret_dict[item][1])
+                if item not in item_dict:
+                    item_dict[item] = 1
+                else:
+                    item_dict[item] += 1
+        post_tax = raw_cost * TAX
+        with_commission = max(post_tax + 1, post_tax + 0.08 *raw_cost)
+        raw, actual = round(post_tax, 2), round(with_commission, 2)
+        comission = round(actual-raw, 2)
+        return render_template('buyer.html', raw=raw, comission=comission, actual=actual, item_dict=item_dict)
+
+@app.route("/payment")
+def payment():
+    return render_template("payment.html")
+
+@app.route("/deliver")
+def deliver():
+    return render_template("deliver.html")
+@app.route("/mapbox")
+def mapbox():
+    return render_template("mapbox.html")
 
 top_nav = '''<nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 

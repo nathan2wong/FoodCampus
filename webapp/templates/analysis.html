@@ -22,6 +22,9 @@
   <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase.js"></script>
 
   <link href="{{ url_for('static',filename='css/sb-admin.css') }}" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+  <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css">
+
   <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
   <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
 
@@ -46,26 +49,6 @@
         </li>
       </ol>
 
-      <!-- Icon Cards-->
-      <div class="row">
-        <div class="col-xl-3 col-sm-6 mb-3">
-          <div class="card text-white bg-warning o-hidden h-100">
-            <div class="card-body">
-              <div class="card-body-icon">
-                <i class="fas fa-fw fa-list"></i>
-              </div>
-              <div class="mr-5">Pipetting Tutorial</div>
-            </div>
-            <a class="card-footer text-white clearfix small z-1" href="/upload">
-              <span class="float-left">View Details</span>
-              <span class="float-right">
-                  <i class="fas fa-angle-right"></i>
-                </span>
-            </a>
-          </div>
-        </div>
-      </div>
-
       <!-- Area Chart Example-->
       <div class="card mb-3">
         <div class="card-header">
@@ -80,16 +63,18 @@
       <div class="card mb-3">
         <div class="card-header">
           <i class="fas fa-table"></i>
-          History</div>
+          Orders</div>
+        <form action="{{ url_for('submit') }}" method="POST">
         <div class="card-body">
           <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <table id="example" class="table table-striped table-bordered" style="width:100%">
               <thead>
               <tr>
                 <th>Restaurant</th>
                 <th>Order</th>
                 <th>Price</th>
                 <th>Popularity</th>
+                <th>Number of Orders</th>
               </tr>
               </thead>
               <tfoot>
@@ -100,19 +85,28 @@
                 <th>Popularity</th>
               </tr>
               </tfoot>
-              {% for option in options %}
               <tbody>
-              <tr>
-                <td>{{ option['\ufeffname'] }}</td>
-                <td>{{ option['item'] }}</td>
-                <td>{{ option['cash_price'] }}</td>
-                <td>{{ option['popularity'] }}</td>
-              </tr>
-              </tbody>
+              {% for key in options %}
+
+                {% for entry in options[key] %}
+                  {% for name in entry %}
+                <tr>
+                  <td>{{ key }}</td>
+                  <td>{{ name }}</td>
+                  <td>{{ entry[name][0] }}</td>
+                  <td>{{ entry[name][1] }}</td>
+                  <td><input type="text" name="{{ name|safe }}"></td>
+                </tr>
+                  {% endfor %}
+                {% endfor %}
+
               {% endfor %}
+              </tbody>
             </table>
           </div>
         </div>
+          <input value="Submit Orders" type="submit">
+        </form>
       </div>
 
     </div>
@@ -139,7 +133,8 @@
 </a>
 
 <!-- Bootstrap core JavaScript-->
-<script src="{{ url_for('static',filename='vendor/jquery/jquery.min.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <script src="{{ url_for('static',filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
 <!-- Custom scripts for all pages-->
@@ -147,7 +142,22 @@
 <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="{{ url_for('static', filename='js/firebase_js.js') }}"></script>
 
+<script>
+  $(document).ready(function() {
+    $('#example').DataTable( {
+    "pagingType": "simple"
+    });
+} );
 
+    $('button').click( function() {
+        var data = table.$('input, select').serialize();
+} );
+</script>
+<style>
+.paginate_button previous{
+display:none;
+}
+</style>
 </body>
 
 </html>
