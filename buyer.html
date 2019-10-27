@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Simple Sidebar - Start Bootstrap Template</title>
+  <title>Buyer</title>
 
   <!-- Bootstrap core CSS -->
   <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
@@ -181,7 +181,7 @@
               "latitude": 37.8671,
               "longitude": -122.25869
             },
-            { 
+            {
               "name": "Mezzo \u2022 Veggie Delight $10.75 \u2022 Veggie Delight $11.20 \u2022 Marinated Tofu Sandwich $10.50 \u2022 Roast Beef Sandwich $10.50",
               "latitude": 37.866131,
               "longitude": -122.258698
@@ -258,7 +258,7 @@
             const setupCustomPopup = (content) => {
               return new mapboxgl.Popup({ offset: 25 })
             .setText(content);
-            }   
+            }
 
             // code from the next step will go here
             restaurantList.forEach((location) => {
@@ -386,28 +386,28 @@
             closeButton: false,
             closeOnClick: false
           });
-           
+
           map.on('mouseenter', 'places', function(e) {
             // Change the cursor style as a UI indicator.
             map.getCanvas().style.cursor = 'pointer';
-             
+
             var coordinates = e.features[0].geometry.coordinates.slice();
             var description = e.features[0].properties.description;
-             
+
             // Ensure that if the map is zoomed out such that multiple
             // copies of the feature are visible, the popup appears
             // over the copy being pointed to.
             while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
             }
-             
+
             // Populate the popup and set its coordinates
             // based on the feature found.
             popup.setLngLat(coordinates)
               .setHTML(description)
               .addTo(map);
           });
-           
+
           map.on('mouseleave', 'places', function() {
             map.getCanvas().style.cursor = '';
             popup.remove();
