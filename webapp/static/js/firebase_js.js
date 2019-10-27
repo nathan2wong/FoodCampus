@@ -1,6 +1,5 @@
-  // Your web app's Firebase configuration
   var firebaseConfig = {
-    apiKey: "AIzaSyCRf6ynRZ5eruLcJJoGF0i2dS5nxtlgC2s",
+    apiKey: "AIzaSyCCAsUqC4wIAoGOX01B-12WdsUmn6le_J0",
     authDomain: "foodcampus.firebaseapp.com",
     databaseURL: "https://foodcampus.firebaseio.com",
     projectId: "foodcampus",
@@ -33,9 +32,6 @@
     /* If the provider gives a display name, use the name for the
     personal welcome message. Otherwise, use the user's email. */
     var welcomeName = name ? name : user.email;
-    console.log(user); // It shows the Firebase user
-    console.log(firebase.auth()); // It is still undefined
-    console.log(firebase.auth().currentUser.getIdToken(/* forceRefresh */ true));
     firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
       userIdToken = idToken;
 

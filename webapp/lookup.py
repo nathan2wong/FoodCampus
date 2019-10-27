@@ -7,6 +7,8 @@ import google
 #from google.cloud import firestore
 
 ALLOWED_EXTENSIONS = set(['xlsx'])
+TAX = 1.0725
+COMISSION = 1
 
 app = Flask(__name__)
 app.secret_key = os.urandom(2**16)
@@ -14,7 +16,7 @@ app.secret_key = os.urandom(2**16)
 import firebase_admin
 from firebase_admin import credentials, storage, auth, firestore
 
-cred=credentials.Certificate('/Users/nathanwong/Desktop/FoodCampus-f38ced1dcb50.json')
+cred=credentials.Certificate('/Users/nathanwong/Desktop/FoodCampus-5de64d4d1920.json')
 firebase_admin.initialize_app(cred, {
     'projectID': 'foodcampus',
     'storageBucket': 'foodcampus.appspot.com'
@@ -28,7 +30,7 @@ def allowed_file(filename):
 @app.route('/')
 def home():
     if not checkLoggedIn():
-        return redirect(url_for('login'))
+        return render_template("splash.html")
     return redirect(url_for('homepage'))
 
 @app.route('/login')
@@ -46,6 +48,28 @@ def homepage():
         blob.upload_from_filename(outfile)
     except:
         print("ok")
+
+    def computeCosts(purchase_orders):
+        raw_cost = 0.0
+        for key in purchase_orders:
+            user_refs = db.collection("restaurants/{0}/Items".format(key))
+            docs = user_refs.stream()
+            options = [doc.to_dict() for doc in docs]
+
+            for order in purchase_orders[key]:
+                for option in options:
+                    product = option['item']
+                    price = option['cash_price']
+                    if product == order:
+                        raw_cost += float(price)
+        post_tax = raw_cost * TAX
+        with_commission = max(post_tax + 1, post_tax + 0.08 *raw_cost)
+        return round(post_tax, 2), round(with_commission, 2)
+
+
+    raw, actual = computeCosts({"Chipotle": ["Chicken Bowl", "Chicken Burrito"], "Top Dog": ["Lemon Chicken", "Potato Salad", "Lemon Chicken", "Potato Salad", "Lemon Chicken", "Potato Salad"]})
+    print(raw, actual, round(actual-raw, 2))
+
     users_ref = db.collection('restaurants/Chipotle/Items')
     docs = users_ref.stream()
 
@@ -60,6 +84,7 @@ def session_login():
     try:
         # Create the session cookie. This will also verify the ID token in the process.
         # The session cookie will have the same claims as the ID token.
+        print(id_token)
         session_cookie = auth.create_session_cookie(id_token, expires_in=expires_in)
         response = jsonify({'status': 'success'})
         # Set cookie policy for session cookie.
